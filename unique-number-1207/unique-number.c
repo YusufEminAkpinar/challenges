@@ -7,45 +7,31 @@
 #include "stdbool.h"
 
 
-typedef struct tuple {
-  int *arr;
-  int len;
-} tuple;
+int countDupe(int *arr, int arrSize){
+  int retval = 0;
+  for (int i = 0; i < arrSize; i++)
+		for (int j = i+1; j < arrSize; j++)
+			if (arr[i] == arr[j]){
+        retval++;
+        break;
+      }
+  printf("Retval: %d\narrSize: %d\n", retval, arrSize);
+  retval = arrSize - retval;
+  return retval;
+}
 
 
-bool checkDupe(int *arr, int arrSize){
-	for (int i = 0; i < arrSize; i++)
+int checkDupe(int *arr, int arrSize){
+  for (int i = 0; i < arrSize; i++)
 		for (int j = i+1; j < arrSize; j++)
 			if (arr[i] == arr[j])
-				return false;
-	return true;
+       return false;
+  return true;
 }
-
-
-void remElem(int *arr, int arrSize){
-  int 
-}
-
-
-
-void remDupe(int *arr, int arrSize){
-  while (!checkDupe) {
-    for (int i = 0; i < arrSize; i++) {
-      for (int j = i+1; j < arrSize; j++) {
-        if (arr[i] == arr[j]) {
-          for (int k = j; k < arrSize; k++) {
-            
-          }
-        }
-      }
-    }
-  }
-}
-
 
 
 int *countNum(int *arr, int arrSize){
-  int *numOfArr = (int *)malloc(arrSize * sizeof(int)); 
+  int *numOfArr = malloc( 4 * arrSize );
   for (int i = 0; i < arrSize; i++) {
     numOfArr[i] = 0;
     for (int j = i; j < arrSize; j++) {
@@ -57,17 +43,41 @@ int *countNum(int *arr, int arrSize){
   return numOfArr;
 }
 
+// bool uniqueOccurences(int* arr, int arrSize){
+  // int reducedSize = countDupe(a, arrSize);
+  // int *count = countNum(a, arrSize);
+  // for (int i = 0; i < reducedSize; i++) {
+    // if (count[i] != 1) {
+      // free(count);
+      // return false;
+    // }
+  // }
+  // free(count);
+  // return true;
+// }
 
-int main(int argc, char const* argv[])
+int main()
 {
-  int a[] = {1, 2, 3, 4, 5, 1, 2, 5};
+  int a[] = {-3,0,1,-3,1,1,1,-3,10,0};
   int arrSize = sizeof(a)/sizeof(a[0]);
-  remDupe(a, arrSize);
-  for (int i = 0; i < arrSize; i++) {
-    printf("%d, ", a[i]);
+  int reducedSize = countDupe(a, arrSize);
+  int *count = countNum(a, arrSize);
+  printf("R-Size: %d\n", reducedSize);
+  for (int i = 0; i < reducedSize; i++) {
+    printf("%d\n", count[i]);
   }
-  printf("\n");
-  return 0;
+  for (int i = 0; i < reducedSize; i++) {
+    for (int j = i+1; j < reducedSize; j++) {
+    if (count[i] == count[j]) {    
+      free(count);
+      printf("False aga\n");
+      return false;
+      }
+    }
+  }
+  printf("True aga\n");
+  free(count);
+  return true;
 }
 
 
