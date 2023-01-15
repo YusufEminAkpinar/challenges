@@ -1,82 +1,66 @@
 /* Task */
 /* Given an array of integers arr, return true if the number of occurrences of each value in the array is unique or false otherwise. */
 
+
+/* Solution Idea:
+ * 1) remove all duplicate ones first then count it in first list.
+ * */
+
+
 #include "stdio.h"
 #include "string.h"
 #include "stdlib.h"
 #include "stdbool.h"
 
 
-int countDupe(int *arr, int arrSize){
+int num_of_occ(int num, int *arr, int arrsize){
   int retval = 0;
-  for (int i = 0; i < arrSize; i++)
-		for (int j = i+1; j < arrSize; j++)
-			if (arr[i] == arr[j]){
-        retval++;
-        break;
-      }
-  printf("Retval: %d\narrSize: %d\n", retval, arrSize);
-  retval = arrSize - retval;
+  for (int i = 0; i < arrsize; i++) {
+    if (arr[i] == num) {
+      retval++;
+    }
+  }
   return retval;
 }
 
+int *arr_of_occ(int *arr, int arrsize){
+  int *occ_arr = (int *)malloc(arrsize * sizeof(int));
+  for (int i = 0; i < arrsize; i++) {
+    occ_arr[i] = num_of_occ(arr[i], arr, arrsize);
+  }
+  return occ_arr;
+}
 
-int checkDupe(int *arr, int arrSize){
-  for (int i = 0; i < arrSize; i++)
-		for (int j = i+1; j < arrSize; j++)
-			if (arr[i] == arr[j])
-       return false;
+bool uniqueOccurrences(int* arr, int arrSize){
+  int *occ_arr = arr_of_occ(arr, arrSize);
+  for (int i = 0; i < arrSize; i++) {
+    printf("occ_arr[i] is: %d || num_of_occ is: %d\n", occ_arr[i], num_of_occ(occ_arr[i], occ_arr, arrSize));
+    if (occ_arr[i] < num_of_occ(occ_arr[i], occ_arr, arrSize)) {
+      return false;
+    }
+  }
   return true;
 }
 
 
-int *countNum(int *arr, int arrSize){
-  int *numOfArr = malloc( 4 * arrSize );
-  for (int i = 0; i < arrSize; i++) {
-    numOfArr[i] = 0;
-    for (int j = i; j < arrSize; j++) {
-      if (arr[i] == arr[j]) {
-        numOfArr[i]++;
-      }
-   } 
-  }
-  return numOfArr;
-}
-
-// bool uniqueOccurences(int* arr, int arrSize){
-  // int reducedSize = countDupe(a, arrSize);
-  // int *count = countNum(a, arrSize);
-  // for (int i = 0; i < reducedSize; i++) {
-    // if (count[i] != 1) {
-      // free(count);
-      // return false;
-    // }
-  // }
-  // free(count);
-  // return true;
-// }
-
 int main()
 {
-  int a[] = {-3,0,1,-3,1,1,1,-3,10,0};
+  int a[] = {1,2,2,1,1,3};
   int arrSize = sizeof(a)/sizeof(a[0]);
-  int reducedSize = countDupe(a, arrSize);
-  int *count = countNum(a, arrSize);
-  printf("R-Size: %d\n", reducedSize);
-  for (int i = 0; i < reducedSize; i++) {
-    printf("%d\n", count[i]);
+  int *occ_arr = arr_of_occ(a, arrSize);
+  // for (int i = 0; i < arrSize; i++) {
+    // printf("arr_of_occ is: %d || num_of_occ for it is: %d\n", occ_arr[i], num_of_occ(occ_arr[i], occ_arr, arrSize));
+    // if (occ_arr[i] < num_of_occ(occ_arr[i], occ_arr, arrSize)) {
+      // printf("Bro... %d is wrong\n", i);
+    // }
+  // }
+  if (uniqueOccurrences(a, arrSize)) {
+    printf("True\n");
   }
-  for (int i = 0; i < reducedSize; i++) {
-    for (int j = i+1; j < reducedSize; j++) {
-    if (count[i] == count[j]) {    
-      free(count);
-      printf("False aga\n");
-      return false;
-      }
-    }
+  else {
+    printf("False\n");
   }
-  printf("True aga\n");
-  free(count);
+  free(occ_arr);
   return true;
 }
 
