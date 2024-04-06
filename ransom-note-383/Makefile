@@ -3,4 +3,4 @@ LIBS=
 
 
 challange: ransom-note.c
-	$(CC) $(CFLAGS) -o ./out/ransom-note ./ransom-note.c
+	$(CC) $(CFLAGS) -o ransom-note ransom-note.c

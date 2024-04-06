@@ -1,81 +1,67 @@
-#include "stdio.h"
-#include "string.h"
+// Given two strings ransomNote and magazine, return true if ransomNote can be
+// constructed by using the letters from magazine and false otherwise. Each
+// letter in magazine can only be used once in ransomNote.
+
 #include "stdlib.h"
+#include "string.h"
+#include "stdio.h"
+#include <stdint.h>
 #include "stdbool.h"
 
 
-/*  Given two strings ransomNote and magazine, return true if ransomNote can be constructed by using the letters from magazine and false otherwise.
-Each letter in magazine can only be used once in ransomNote. */
-
-int *str_to_int(char *string){
-    int len_str = strlen(string);
-    int *int_arr = (int *)malloc(len_str * sizeof(int));
-    for (int i = 0; i < len_str; i++) {
-      int_arr[i] = (int)string[i];
-    }
-    for (int i = 0; i < len_str; i++) {
-      printf("%d, \n", int_arr[i]);
-    }
-    return int_arr;
+static int cmpchar(const void *p1, const void *p2){
+  return (* (char *)p1 - * (char *) p2);
 }
 
-/* Plan:
- * Number of occurence'lardan git*/
-
-void rm_char(char *string, char chr){
-    for (size_t i=0; i<strlen(string); i++){
-        if (string[i] == chr){
-            string[i] = '_';
-        }
-    }
+void sort_str(char *str, int size){
+  if(str == NULL) return;
+  qsort(str, size, 1, cmpchar);
 }
 
-int num_of_occ(char *string, char chr){
-  int retval = 0;
-  for (size_t i = 0; i < strlen(string); i++) {
-    if (string[i] == '_')
-        ;
-    else if (string[i] == chr) {
-      retval ++;
-      rm_char(string, string[i]);
-    }
-  }
-  return retval;
+char *next_char(char *str, char chr){
+  char *ret = strrchr(str, chr);
+  ret++;
+  return ret;
 }
 
-bool canConstruct(char *ransomNote, char *magazine){
-  if (strlen(ransomNote) > strlen(magazine)) {
+bool canConstruct(char *magazine, char* ransomNote){
+  int lenmag = strlen(magazine);
+  int lennote = strlen(ransomNote);
+  if (lenmag < lennote){
     return false;
   }
-  int rans = 0;
-  int magan = 0;
-  for (size_t i = 0; ransomNote[i] != '\0'; i++) {
-    rans = num_of_occ(ransomNote, ransomNote[i]);
-    magan = num_of_occ(magazine, ransomNote[i]);
-    if (rans > magan) {
+  char cur_char;
+  char *mag_tmp;
+  char *note_tmp;
+  sort_str(magazine, lenmag);
+  sort_str(ransomNote, lennote);
+  while(*ransomNote){
+    cur_char = *ransomNote;
+    magazine = strchr(magazine, cur_char);
+    if (magazine == NULL) {
+      printf("NULL?\n");
       return false;
     }
+    mag_tmp = next_char(magazine, cur_char);
+    note_tmp = next_char(ransomNote, cur_char);
+    if ((mag_tmp - magazine) < (note_tmp - ransomNote)){
+      printf("You fucked up in %c\n", cur_char);
+      return false;
+    }
+    ransomNote++;
   }
+  printf("True\n");
   return true;
 }
 
 
-int main(int argc, char *argv[])
+int main(void)
 {
-  (void) argc;
-   char *str1 = (char *)argv[1];
-   char *str2 = (char *)argv[2];
-   if (canConstruct(str1, str2)) {
-     printf("yeyyy\n");
-   }
-   else {
-     printf("NOOO\n");
-   }
-    // char some[] = "yusuf";
-    // int *arr = arr_of_occ(some);
-    // for (size_t i = 0; i < strlen(some); i++) {
-      // printf("%c | %d\n", some[i], arr[i]);
-    // }
-    return 0;
+  char *note = strdup("aa");
+  char *mag = strdup("aab");
+  int val = canConstruct(mag, note);
+  printf("And val is: %d\n", val);
+  free(mag);
+  free(note);
+  return 0;
 }
-
