@@ -1,5 +1,4 @@
 #include "stdio.h"
-#include "errno.h"
 #include "stdlib.h"
 #include "string.h"
 
@@ -47,3 +46,7 @@ int dayOfYear(char *date){
     retval += d;
     return retval;
 }
+
+
+// 2-3 ms beats %97 of C users
+// 58 ms beats %99.9 of Python users

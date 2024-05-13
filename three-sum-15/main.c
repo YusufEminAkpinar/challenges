@@ -3,11 +3,12 @@
 Notice that the solution set must not contain duplicate triplets. */
 
 #include <stdio.h>
-#include <stdlibh.>
+#include <stdlib.h>
+#include <string.h>
 
 
 int** threeSum(int* nums, int numsSize, int* returnSize, int** returnColumnSizes){
-
+  return NULL;
 }
 
 int main() {
