@@ -15,11 +15,16 @@ int main(int argc, char **argv){
 	unsigned long ret = 0;
 	int n = 2;
 	int fib = 0;
-	while(fib < 4000000){
+	while(1){
 		fib = fibn(n);
-		printf("fib(%d) = %d\n", n, fib);
-		n = n + 3;
-		ret += fib;
+		if (fib < 4000000) {
+			printf("fib(%d) = %d\n", n, fib);
+			n = n + 3;
+			ret += fib;
+		}
+		else{
+			break;
+		}
 	}
 	printf("Sum is %lu\n", ret);
 	return 0;
