@@ -1,0 +1,87 @@
+#include <stdio.h>
+#include <signal.h>
+#include <gmp.h>
+#include <math.h>
+
+static volatile int keepRunning = 1;
+static long double start = 1e12-1;
+
+
+void intHandler(int dummy){
+	keepRunning = 0;
+}
+#ifndef _DEFAULT_SOURCE
+#define _DEFAULT_SOURCE
+#endif
+
+//int isOddIntegerAfterOperations(long x){
+//	long double k = powl( 1.0+2.0*x*x-2.0*x, .5 ); // sqrt( 1 + 2x**2 - 2x)
+//	if (  (long)k == k && ((long)k % 2) ){
+//		long res = (1+k)/2;
+//		printf("Total of %ld disc and %ld blue discs.\n", x, res);
+//		return 1;
+//	}
+//	return 0;
+//}
+
+int isOddIntegerAfterOperations(mpz_t x, int i){
+	if (i%100000 == 0){
+		printf("x is:");
+		mpz_out_str(stdout, 10, x);
+		printf("\n");
+	}
+	int retval = 0;
+	mpz_t tmp, one, two, res, kInt;
+	mpf_t k, tmpF;
+
+	mpz_inits(tmp, one, two, res, kInt, NULL);
+	mpf_init(k);
+	mpf_init(tmpF);
+	mpz_set_ui(one, 1);
+	mpz_set_ui(two, 2);
+
+	// tmp = 1 + 2x^2 - 2x
+	mpz_mul(tmp, x, x); // tmp = x^2
+	mpz_mul_ui(tmp, tmp, 2); // tmp = 2x^2
+	mpz_submul(tmp, x, two); // tmp = 2x^2 - 2x
+	mpz_add_ui(tmp, tmp, 1); // tmp = 1 + 2x^2 - 2x
+	mpf_set_z(tmpF, tmp);
+	//printf("This is okay.\nsqrt(1+2x^2-2x) is: ");
+	mpf_sqrt(k, tmpF); // k = sqrt(1 + 2x^2 - 2x) = sqrt(tmp)
+	//mpf_out_str(stdout, 10, 200, k);
+	//printf("\n");
+
+	mpz_set_f(kInt, k);
+	//printf("And kInt is: ");
+	//mpz_out_str(stdout, 10, kInt);
+	//printf("\n");
+	
+
+	//printf("This is okay too.\n");
+	if ( mpf_cmp_z(k, kInt) == 0 && mpz_odd_p(kInt)){
+		//printf("This is okay also.\n");
+		mpz_add_ui(res, kInt, 1); // res = k+1
+		mpz_div_ui(res, res, 2); // res = res/2 = (k+1)/2
+		gmp_printf("Total is: %Zd and blue is: %Zd\n",x, res);
+		retval = 1;
+	}
+	//printf("Not perfect square.\n");
+	mpz_clears(tmp, one, two, kInt, res, NULL);
+	mpf_clears(k, tmpF, NULL);
+
+	return retval;
+}
+
+
+int main(void){
+	mpz_t val;
+	int i = 0;
+	mpz_init(val);
+	mpz_set_str(val, "1000000000000", 10);
+	while(1){
+		if (isOddIntegerAfterOperations(val, i++)) break;
+		mpz_add_ui(val, val, 1);
+	}
+	mpz_clear(val);
+	return 0;
+}
